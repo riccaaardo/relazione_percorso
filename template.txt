@@ -1,0 +1,13 @@
+Given a graph with $N_NODES nodes, the following colors: $COLORS
+and the following edges that compose the graph: $EDGES,
+exctract information as "facts" based on the following example:
+
+INPUT:
+Given a graph with 4 nodes, the following colors: red, blue
+and the following edges that compose the graph: (0, 1), (0, 2), (0, 3), (1, 2), (1, 3), (2, 3),
+extract information.
+
+OUTPUT:
+n_nodes(4).
+colors(red, blue).
+edges((0, 1), (0, 2), (0, 3), (1, 2), (1, 3), (2, 3))
