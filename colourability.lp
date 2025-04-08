@@ -27,7 +27,7 @@ colored(X, C) | unColored(X, C) :- node(X), color(C).
 % Each node must be colored
 % Since from the successive constraint I know that each node is colored just once,
 % I simply need to ensure that in the colored set there are exactly nNodes nodes
-:- nNodes(K), #count{X: colored(X,C)} < K.
+:- nNodes(K), #count{X: colored(X,C)} != K.
 
 % 1 color per node
 :- colored(X, C), colored(X, C1), C != C1.
