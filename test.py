@@ -1,29 +1,31 @@
-from openai import OpenAI
+import graphGeneratorTest
+import injector
+import AiManager
+import networkx
 
-client = OpenAI(
-    base_url='http://localhost:11434/v1/',
+def printSeparator():
+    for i in range(50):
+        print("#", end="")
+    print()
 
-    # required but ignored
-    api_key='ollama',
-)
+if __name__ == '__main__':
+    n_nodes = int(input("Enter the number of nodes: "))
+    G = graphGeneratorTest.generateGraph(n_nodes)
+    colors = graphGeneratorTest.generateColors(G) # could be an input?
 
-# Creazione della richiesta al modello
-chat_completion = client.chat.completions.create(
-    messages=[
-        {
-            'role': 'user',
-            'content': 'Hi!',
-        },
-        {
-            "role": "system",
-            "content": "You are a helpful assistant designed to solve graph colourabilites problems. ",
-        }
-    ],
-    model='llama3.2:1b',
-)
+    prompt = injector.inject(len(G.nodes), colors, G.edges)
 
-# Stampa della risposta
-print(chat_completion.choices[0].message.content)
+    printSeparator()
+    print("YOUR PROMPT")
+    printSeparator()
+    print(prompt)
 
-print(chat_completion.choices[0].message)
+    printSeparator()
+    print("ANSWER")
+    printSeparator()
+
+    response = AiManager.askOllama(prompt)
+    print(response.choices[0].message.content)
+
+
 
