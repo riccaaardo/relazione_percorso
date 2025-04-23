@@ -20,8 +20,21 @@ node(X) :- edge(X, Y).
 % Two nodes are adjacent if an edge connects them
 % adj(X,Y) :- edge(X,Y). -> Redundant, it's the edge set itself
 
+%
 % I didn't use the disjunction with all the colors (colored(X, red) | colored(X, blue) | ...) 
 % because it wouldn't work when the facts are not pre-established but input from outside
+%
+% (antonio): nell'input language di clingo puoi scrivere color(X,C): color(C) :- node(X), e il grounder espande
+%   esattamente in quello che dici, è molto utile se color/1 non è statico ma cambia da programma a programma.
+%   Usando altri costrutti di ASP potresti scrivere graph coloring in modo molto compatto come:
+% 
+%     { assign_color(X,C): color(C) } = 1 :- node(X).
+%     :- assign_color(X,C), assign_color(Y,C), node(X,Y).
+%
+%   ovviamente non è il "core" di quello che devi fare per questa cosa, quindi va benissimo qualsiasi cosa scegli di fare, 
+%   anche lasciare così.
+%
+
 colored(X, C) | unColored(X, C) :- node(X), color(C).
 
 % Each node must be colored
