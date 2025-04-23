@@ -15,11 +15,13 @@ if __name__ == '__main__':
 
     prompt = injector.inject(len(G.nodes), colors, G.edges)
 
+    print("\n\n")
     printSeparator()
     print("YOUR PROMPT")
     printSeparator()
     print(prompt)
 
+    print("\n\n")
     printSeparator()
     print("ANSWER")
     printSeparator()
