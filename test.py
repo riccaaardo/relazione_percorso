@@ -34,6 +34,7 @@ if __name__ == '__main__':
     printSeparator()
     print("LLM ANSWER")
     printSeparator()
+    
 
     response = AiManager.askOllama(prompt)
     llm_parse = response.choices[0].message.content

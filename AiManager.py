@@ -1,4 +1,11 @@
 from openai import OpenAI
+from pydantic import BaseModel
+
+# to force the model to use a specific output format
+class Output(BaseModel):
+    node: list[str]
+    edge: list[str]
+    color: list[str]
 
 client = OpenAI(
     base_url='http://localhost:11434/v1/',
@@ -42,6 +49,7 @@ color("blue").
 """
 
 def askOllama(question):
+    # help(client.chat.completions.create) uncomment to see all the parameters
     chat_completion = client.chat.completions.create(
         messages=[
             {
@@ -54,8 +62,16 @@ def askOllama(question):
             }
         ],
         model='llama3.2:1b',
+        response_format = Output.model_json_schema(),
     )
+    # return validate_json(chat_completion)
     return chat_completion
+
+
+def validate_json(chat_completion):
+    output = Output.model_validate_json(chat_completion.choices[0].message.content)
+    print("STAMPO L'OUTPUT FORZATO CON LO SCHERMA JSON:\n ", output)
+    return output
 
 
 
