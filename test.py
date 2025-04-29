@@ -2,6 +2,9 @@ import graphGeneratorTest
 import injector
 import AiManager
 import networkx
+import clingo
+import sys
+import solver
 
 def printSeparator():
     for i in range(50):
@@ -9,7 +12,13 @@ def printSeparator():
     print()
 
 if __name__ == '__main__':
-    n_nodes = int(input("Enter the number of nodes: "))
+    
+    if len(sys.argv) > 1:
+        n_nodes = sys.argv[1]
+        n_nodes = int(n_nodes)
+    else:
+        n_nodes = 5
+    
     G = graphGeneratorTest.generateGraph(n_nodes)
     colors = graphGeneratorTest.generateColors(G) # could be an input?
 
@@ -23,11 +32,21 @@ if __name__ == '__main__':
 
     print("\n\n")
     printSeparator()
-    print("ANSWER")
+    print("LLM ANSWER")
     printSeparator()
 
     response = AiManager.askOllama(prompt)
-    print(response.choices[0].message.content)
+    llm_parse = response.choices[0].message.content
+    print(llm_parse)
 
-
-
+    print("\n\n")
+    printSeparator()
+    print("CLINGO ANSWER")
+    printSeparator()
+    col_response = solver.call_clingo(llm_parse)
+    #print(col_response)
+    if not col_response:
+        print("graph is not colorable")
+    else:
+        for x in col_response:
+            print(x)
