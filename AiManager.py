@@ -16,41 +16,19 @@ client = OpenAI(
 
 #SYSTEM_PROMPT = """You are a helpful assistant designed to solve graph colourabilites problems."""
 
-SYSTEM_PROMPT = """You are a helpful assistant designed to parse natural language description of graphs into logical facts of the following form:
-- node(x) to say that x is a node;
-- edge(x,y) to say that there exist a link between the node x and the node y;
-- color(z) to say that z is a color.
-
-In all the above example, the contents of "node", "edge" and "color" must be double-quoted strings.
-
-You are absolutely not allowed to reply with something that is not of the above form (such as Python code, or explanations).
-
-Here is an example:
-
-INPUT:
-Given a graph with 4 nodes, the following colors: red, blue
-and the following edges that compose the graph: (0, 1), (0, 2), (0, 3), (1, 2), (1, 3), (2, 3),
-extract node, edge, and color information.
-
-OUTPUT:
-node("0").
-node("1").
-node("2").
-node("3").
-edge("0","1").
-edge("0","2").
-edge("0","3").
-edge("1","2").
-edge("1","3").
-edge("2","3").
-color("red").
-color("blue").
-
+SYSTEM_PROMPT = """You are a helpful assistant designed to parse natural language description of graphs into a JSON format.
+The form your output, use the following output example:
+{
+    "node": ["1", "2", ...],
+    "edge": ["(1, 2)", "(2, 3)", ...],
+    "color": ["red", "blue", ..."]
+}
+You are absolutely not allowed to reply with something that is not in pure json format.
 """
 
 def askOllama(question):
     # help(client.chat.completions.create) uncomment to see all the parameters
-    chat_completion = client.chat.completions.create(
+    chat_completion = client.beta.chat.completions.parse(
         messages=[
             {
                 "role": "system",
@@ -62,17 +40,36 @@ def askOllama(question):
             }
         ],
         model='llama3.2:1b',
-        response_format = Output.model_json_schema(),
+        response_format=Output.model_json_schema(),
     )
-    # return validate_json(chat_completion)
-    return chat_completion
+    return validate_json(chat_completion)
+    #return chat_completion
 
 
 def validate_json(chat_completion):
     output = Output.model_validate_json(chat_completion.choices[0].message.content)
-    print("STAMPO L'OUTPUT FORZATO CON LO SCHERMA JSON:\n ", output)
-    return output
+    # print("OUTPUT IN JSON FORMAT:\n ", chat_completion.choices[0].message.content)
+    return extract_content(output)
 
+def extract_content(json_data):
+    result = []
+
+    # Estrai i nodi
+    for node in json_data.node:  # Usa la notazione a punti
+        result.append(f'node("{node}").')
+
+    # Estrai gli archi
+    for edge in json_data.edge:  # Usa la notazione a punti
+        # Rimuovi parentesi e spazi, quindi separa i nodi
+        u, v = edge.strip("()").split(", ")
+        result.append(f"edge(\"{u}\",\"{v}\").")
+
+    # Estrai i colori
+    for color in json_data.color:  # Usa la notazione a punti
+        result.append(f"color(\"{color}\").")
+
+    # Unisci il risultato in una stringa con nuove righe
+    return "\n".join(result)
 
 
 # print(chat_completion.choices[0].message.content)

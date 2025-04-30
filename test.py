@@ -34,17 +34,17 @@ if __name__ == '__main__':
     printSeparator()
     print("LLM ANSWER")
     printSeparator()
-    
+
 
     response = AiManager.askOllama(prompt)
-    llm_parse = response.choices[0].message.content
-    print(llm_parse)
+    #llm_parse = response.choices[0].message.content
+    print(response)
 
     print("\n\n")
     printSeparator()
     print("CLINGO ANSWER")
     printSeparator()
-    col_response = solver.call_clingo(llm_parse)
+    col_response = solver.call_clingo(response)
     #print(col_response)
     if not col_response:
         print("graph is not colorable")
