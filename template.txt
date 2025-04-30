@@ -5,3 +5,4 @@ and the following edges that compose the graph:
 $EDGES,
 
 exctract node, edge and color information as logical facts.
+Then, solve the graph coloring problem.

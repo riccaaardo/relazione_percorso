@@ -7,6 +7,7 @@ def call_clingo(facts):
     ctl.ground()
 
     with ctl.solve(yield_=True) as hnd:
+       
        ans = hnd.get()
        print("Satisfiable?", ans.satisfiable)
 
@@ -19,4 +20,9 @@ def call_clingo(facts):
            if sym.name == 'colored':
                solution.append(str(sym))
 
-       return solution
+       if not solution:
+           print("No solution found")
+       else:
+           for x in solution:
+               print(x)
+       # return solution

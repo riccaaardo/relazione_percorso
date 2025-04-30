@@ -40,6 +40,7 @@ if __name__ == '__main__':
     #llm_parse = response.choices[0].message.content
     print(response)
 
+    """
     print("\n\n")
     printSeparator()
     print("CLINGO ANSWER")
@@ -51,3 +52,4 @@ if __name__ == '__main__':
     else:
         for x in col_response:
             print(x)
+    """
