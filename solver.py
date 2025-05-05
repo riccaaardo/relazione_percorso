@@ -16,7 +16,7 @@ def call_clingo(facts):
        model = hnd.model()
        solution = []
        for sym in model.symbols(atoms=True):
-           if sym.name == 'colored':
+           if sym.name == 'assign_color':
                solution.append(str(sym))
 
        return solution
