@@ -2,20 +2,20 @@
 % and the following edges composing the graph: (0, 1), (0, 2), (0, 3), (1, 2), (1, 3), (2, 3)
 % extract information.
 
-color(red).
-color(blue).
-color(green).
+% color(red).
+% color(blue).
+% color(green).
 
-edge(0,1). edge(1,0).
-edge(0,2). edge(2,0).
-edge(0,3). edge(3,0).
-edge(1,2). edge(2,1).
-edge(2,3). edge(3,2).
+% edge(0,1). edge(1,0).
+% edge(0,2). edge(2,0).
+% edge(0,3). edge(3,0).
+% edge(1,2). edge(2,1).
+% edge(2,3). edge(3,2).
 
-nNodes(4). % Could be calculated, but since it's in the template, I'll keep it
+% nNodes(4). % Could be calculated, but since it's in the template, I'll keep it
 
 % Node extraction
-node(X) :- edge(X, Y).
+% node(X) :- edge(X, Y).
 
 % Two nodes are adjacent if an edge connects them
 % adj(X,Y) :- edge(X,Y). -> Redundant, it's the edge set itself

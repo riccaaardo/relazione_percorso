@@ -1,12 +1,6 @@
 from openai import OpenAI
 from pydantic import BaseModel
 
-# to force the model to use a specific output format
-class Output(BaseModel):
-    node: list[str]
-    edge: list[str]
-    color: list[str]
-
 client = OpenAI(
     base_url='http://localhost:11434/v1/',
 
@@ -18,10 +12,11 @@ client = OpenAI(
 
 SYSTEM_PROMPT = """You are a helpful assistant designed to parse natural language description of graphs into logical facts of the following form:
 - node(x) to say that x is a node;
+- nNodes(n) to say that n is the number of nodes;
 - edge(x,y) to say that there exist a link between the node x and the node y;
 - color(z) to say that z is a color.
 
-In all the above example, the contents of "node", "edge" and "color" must be double-quoted strings.
+In all the above example, the contents of "node", "nNodes", "edge" and "color" must be double-quoted strings.
 
 You are absolutely not allowed to reply with something that is not of the above form (such as Python code, or explanations).
 
@@ -30,13 +25,14 @@ Here is an example:
 INPUT:
 Given a graph with 4 nodes, the following colors: red, blue
 and the following edges that compose the graph: (0, 1), (0, 2), (0, 3), (1, 2), (1, 3), (2, 3),
-extract node, edge, and color information.
+extract every node, the number of nodes, edge, and the colors.
 
 OUTPUT:
 node("0").
 node("1").
 node("2").
 node("3").
+nNodes("4").
 edge("0","1").
 edge("0","2").
 edge("0","3").
@@ -46,6 +42,7 @@ edge("2","3").
 color("red").
 color("blue").
 
+It is mandatory that you respect the example output format.
 """
 
 def askOllama(question):
@@ -62,16 +59,8 @@ def askOllama(question):
             }
         ],
         model='llama3.2:1b',
-        response_format = Output.model_json_schema(),
     )
-    # return validate_json(chat_completion)
     return chat_completion
-
-
-def validate_json(chat_completion):
-    output = Output.model_validate_json(chat_completion.choices[0].message.content)
-    print("STAMPO L'OUTPUT FORZATO CON LO SCHERMA JSON:\n ", output)
-    return output
 
 
 

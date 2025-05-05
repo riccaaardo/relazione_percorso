@@ -11,7 +11,7 @@ def generateGraph(n_nodes):
     return G
 
 def generateColors(G):
-    colors = list(mcolors.CSS4_COLORS.keys()) # 148 total colors. What if we have more nodes than colors? 
+    colors = list(mcolors.CSS4_COLORS.keys()) # 148 total colors
     n_colors = random.randint(1, len(G.nodes))
     color_list = random.sample(colors, n_colors) 
     return color_list

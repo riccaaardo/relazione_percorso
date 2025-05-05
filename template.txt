@@ -4,4 +4,4 @@ $COLORS
 and the following edges that compose the graph: 
 $EDGES,
 
-exctract node, edge and color information as logical facts.
+exctract node, number of nodes, edge and color information as logical facts.
