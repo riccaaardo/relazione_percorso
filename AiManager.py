@@ -4,6 +4,7 @@ from pydantic import BaseModel
 # to force the model to use a specific output format
 class Output(BaseModel):
     node: list[str]
+    nNodes: str
     edge: list[str]
     color: list[str]
 
@@ -17,13 +18,21 @@ client = OpenAI(
 #SYSTEM_PROMPT = """You are a helpful assistant designed to solve graph colourabilites problems."""
 
 SYSTEM_PROMPT = """You are a helpful assistant designed to parse natural language description of graphs into a JSON format.
-The form your output, use the following output example:
+The form your output, consider the following example:
+
+INPUT:
+Given a graph with 4 nodes, the following colors: red, green, blue 
+and the following edges that compose the graph: (0,1), (0,2), (0,3), (1,2), (1,3), (2,3)
+exctract node, number of nodes, edge and color information as logical facts.
+
+OUTPUT:
 {
-    "node": ["1", "2", ...],
-    "edge": ["(1, 2)", "(2, 3)", ...],
-    "color": ["red", "blue", ..."]
+    "node": ["0", "1", "2", "3"],
+    "nNodes": "4",
+    "edge": ["(0, 1)", "(0, 2)", "(0, 3)", "(1, 2)", "(1, 3)", "(2, 3)"],
+    "color": ["red", "green", "blue"]
 }
-You are absolutely not allowed to reply with something that is not in pure json format.
+You are absolutely not allowed to reply with something that is not in pure json format or that does not respect the given output example.
 """
 
 def askOllama(question):
@@ -48,7 +57,7 @@ def askOllama(question):
 
 def validate_json(chat_completion):
     output = Output.model_validate_json(chat_completion.choices[0].message.content)
-    # print("OUTPUT IN JSON FORMAT:\n ", chat_completion.choices[0].message.content)
+    print("OUTPUT IN JSON FORMAT:\n ", chat_completion.choices[0].message.content)
     return extract_content(output)
 
 def extract_content(json_data):
@@ -57,6 +66,8 @@ def extract_content(json_data):
     # Estrai i nodi
     for node in json_data.node:  # Usa la notazione a punti
         result.append(f'node("{node}").')
+
+    result.append(f'nNodes("{json_data.nNodes}").')
 
     # Estrai gli archi
     for edge in json_data.edge:  # Usa la notazione a punti
